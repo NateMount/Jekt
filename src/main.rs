@@ -14,8 +14,8 @@ fn main(){
         RunMode::HELP => display_help(),
         RunMode::LIST => commands::list(),
         RunMode::INFO(project_id) => commands::info(project_id),
-        RunMode::NEW(project_id, path) => println!("NEW::{} @ {}", project_id, path),
-        RunMode::PATH(project_id) => println!("PATH::{}", project_id),
+        RunMode::NEW(project_id, path) => commands::new(project_id, path),
+        RunMode::PATH(project_id) => commands::path(project_id),
         RunMode::DELETE(project_id) => println!("DELETE::{}", project_id),
         RunMode::CONFIG(setting, value) => println!("CONFIG::{}={}", setting, value)
     }
