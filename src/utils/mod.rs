@@ -15,7 +15,7 @@ pub fn display_help() {
 \t\x1b[1;32mconfig\x1b[0m\t\t\x1b[34m(\x1b[0m setting, value \x1b[34m)\x1b[0m\tset value of \x1b[1;34m`setting`\x1b[0m to \x1b[1;34m`value`\x1b[0m
 \t\x1b[1;32minfo\x1b[0m\t\t\x1b[34m(\x1b[0m projectId \x1b[34m)\x1b[0m\t\tshow metadata and info on \x1b[1;34m`projectId`\x1b[0m
 \t\x1b[1;32mpath\x1b[0m\t\t\x1b[34m(\x1b[0m projectId \x1b[34m)\x1b[0m\t\tshow full path to \x1b[1;34m`projectId`\x1b[0m
-\t\x1b[1;32mnew\x1b[0m\t\t\x1b[34m(\x1b[0m path, projectId \x1b[34m)\x1b[0m\tbuild a new project at \x1b[1;34m`path`\x1b[0m with id \x1b[1;34m`projectId`\x1b[0m
+\t\x1b[1;32mnew\x1b[0m\t\t\x1b[34m(\x1b[0m projectId, path \x1b[34m)\x1b[0m\tbuild a new project at \x1b[1;34m`path`\x1b[0m with id \x1b[1;34m`projectId`\x1b[0m
 \t\x1b[1;32mdelete\x1b[0m\t\t\x1b[34m(\x1b[0m projectId \x1b[34m)\x1b[0m\t\tdelete \x1b[1;34m`projectId`\x1b[0m from indexing (\x1b[3;32m Will not delete contents of project \x1b[0m)
     ")
 }
