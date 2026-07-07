@@ -3,7 +3,6 @@
 
 // === Imports
 mod utils;
-mod functions;
 use crate::utils::{argparse::RunMode, display_help};
 
 fn main(){
@@ -12,7 +11,7 @@ fn main(){
 
     match mode {
         RunMode::HELP => display_help(),
-        RunMode::LIST => functions::list(),
+        RunMode::LIST => println!("LIST"),
         RunMode::INFO(project_id) => println!("INFO::{}", project_id),
         RunMode::NEW(project_id, path) => println!("NEW::{} @ {}", project_id, path),
         RunMode::PATH(project_id) => println!("PATH::{}", project_id),
