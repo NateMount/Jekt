@@ -4,13 +4,10 @@
 
 use std::fs;
 use serde::{Deserialize, Serialize};
-use toml::value::Datetime;
-use std::io::Write;
 
 // === Constants
 // TODO: Replace with full install path
 const INDEX_PATH: &str  = "./resources/jekt-index.toml";
-const CONFIG_PATH: &str = "./resources/jekt-conf.toml";
 
 // Structs
 
