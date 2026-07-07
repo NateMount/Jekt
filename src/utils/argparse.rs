@@ -18,21 +18,21 @@ pub fn build_run_config() -> RunMode{
     if cli_arg.len() == 1 { return RunMode::HELP }
 
     match cli_arg[1].to_lowercase().as_str() {
-        "list" => RunMode::LIST,
+        "list" | "ls" => RunMode::LIST,
         "info" => RunMode::INFO(
             cli_arg.get(2).unwrap_or(&String::from("*")).clone()
         ),
-        "path" => RunMode::PATH(
+        "path" | "." => RunMode::PATH(
             cli_arg.get(2).unwrap_or(&String::from("*")).clone()
         ),
-        "new" => RunMode::NEW(
+        "new" | "+" => RunMode::NEW(
             cli_arg.get(2).unwrap_or(&String::from("_na")).clone(),
             cli_arg.get(3).unwrap_or(&String::from(".")).clone()
         ),
-        "delete" => RunMode::DELETE(
+        "delete" | "-" => RunMode::DELETE(
             cli_arg.get(2).unwrap_or(&String::from("_na")).clone()
         ),
-        "config" => RunMode::CONFIG(
+        "config" | "conf" => RunMode::CONFIG(
             cli_arg.get(2).unwrap_or(&String::from("_na")).clone(),
             cli_arg.get(3).unwrap_or(&String::from("_na")).clone()
         ),
