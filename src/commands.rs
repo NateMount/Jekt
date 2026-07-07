@@ -17,8 +17,10 @@ struct Project {
     id: String,
     desc: String,
     stack: Vec<String>,
+    tags: Vec<String>,
+    path: String,
+    state: String,
     start_date: toml::value::Datetime,
-    path: String
 }
 
 #[derive(Debug, Deserialize)]
@@ -45,4 +47,20 @@ pub fn list(){
     for project in index.project {
         println!(">>\t\x1b[1;34m[\x1b[0m {} \x1b[1;34m]\x1b[0m\t\x1b[3m{}\x1b[0m", project.id, project.desc);
     }
+}
+
+pub fn info(project_id: String){
+    let index: ProjectIndex = load_projects();
+
+    for project in index.project{
+        if project.id.to_ascii_lowercase() == project_id.to_ascii_lowercase() {
+            println!("\x1b[1;34m[\x1b[0m {} \x1b[1;34m]\x1b[0m: \x1b[1;32m( STARTED\x1b[0m {} \x1b[1;32m)\x1b[0m", project.id, project.start_date);
+            println!("\t\x1b[1;35m[\x1b[0m \x1b[4mDescription\x1b[0m \x1b[1;35m]\x1b[0m: \x1b[3m{}\x1b[0m", project.desc);
+            println!("\t\x1b[1;34m(\x1b[0m Path  \x1b[1;34m)\x1b[0m: {}", project.path);
+            println!("\t\x1b[1;34m(\x1b[0m State \x1b[1;34m)\x1b[0m: {}", project.state);
+            println!("\t\x1b[1;34m(\x1b[0m Stack \x1b[1;34m)\x1b[0m: {:?}", project.stack);
+            println!("\t\x1b[1;34m(\x1b[0m Tags  \x1b[1;34m)\x1b[0m: {:?}", project.tags);
+        }
+    }
+
 }

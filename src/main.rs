@@ -13,7 +13,7 @@ fn main(){
     match mode {
         RunMode::HELP => display_help(),
         RunMode::LIST => commands::list(),
-        RunMode::INFO(project_id) => println!("INFO::{}", project_id),
+        RunMode::INFO(project_id) => commands::info(project_id),
         RunMode::NEW(project_id, path) => println!("NEW::{} @ {}", project_id, path),
         RunMode::PATH(project_id) => println!("PATH::{}", project_id),
         RunMode::DELETE(project_id) => println!("DELETE::{}", project_id),
