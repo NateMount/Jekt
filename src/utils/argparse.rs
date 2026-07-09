@@ -8,7 +8,8 @@ pub enum RunMode {
     INFO(String),
     PATH(String),
     NEW(String, String),
-    DELETE(String)
+    DELETE(String),
+    ARCHIVE(String)
 }
 
 pub fn build_run_config() -> RunMode{
@@ -29,6 +30,9 @@ pub fn build_run_config() -> RunMode{
             cli_arg.get(3).unwrap_or(&String::from(".")).clone()
         ),
         "delete" | "-" => RunMode::DELETE(
+            cli_arg.get(2).unwrap_or(&String::from("_na")).clone()
+        ),
+        "archive" => RunMode::ARCHIVE(
             cli_arg.get(2).unwrap_or(&String::from("_na")).clone()
         ),
         _ => RunMode::HELP
