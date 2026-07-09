@@ -6,7 +6,7 @@ pub fn display_help() {
     println!("
 \x1b[1;35m[ Jekt\x1b[0m::Help \x1b[1;35m]\x1b[0m
 
-\x1b[1;34mUsage:\x1b[0m jekt \x1b[1;32m[Command]\x1b[0m [ /arg:opt \x1b[1;34m...\x1b[0m ]
+\x1b[1;34mUsage:\x1b[0m jekt \x1b[1;32m[Command]\x1b[0m [ arg \x1b[1;34m...\x1b[0m ]
 
 \x1b[1;32m[\x1b[0m Commands \x1b[1;32m]\x1b[0m
 \t\x1b[1;4;32mcommand\x1b\t\t\x1b[4;34margs\x1b[0m\t\t\t\x1b[4mdescritpion\x1b[0m
