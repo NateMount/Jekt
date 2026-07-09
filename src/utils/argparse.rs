@@ -9,7 +9,8 @@ pub enum RunMode {
     PATH(String),
     NEW(String, String),
     DELETE(String),
-    ARCHIVE(String)
+    ARCHIVE(String),
+    RESTORE(String)
 }
 
 pub fn build_run_config() -> RunMode{
@@ -33,6 +34,9 @@ pub fn build_run_config() -> RunMode{
             cli_arg.get(2).unwrap_or(&String::from("_na")).clone()
         ),
         "archive" => RunMode::ARCHIVE(
+            cli_arg.get(2).unwrap_or(&String::from("_na")).clone()
+        ),
+        "restore" | "revive" => RunMode::RESTORE(
             cli_arg.get(2).unwrap_or(&String::from("_na")).clone()
         ),
         _ => RunMode::HELP
