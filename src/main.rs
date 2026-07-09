@@ -17,7 +17,7 @@ fn main(){
         RunMode::NEW(project_id, path, description) => commands::new(project_id, path, description),
         RunMode::PATH(project_id) => commands::path(project_id),
         RunMode::DELETE(project_id) => println!("DELETE::{}", project_id),
-        RunMode::ARCHIVE(project_id) => println!("ARCHIVE::{}", project_id),
-        RunMode::RESTORE(project_id) => println!("RESTORE::{}", project_id)
+        RunMode::ARCHIVE(project_id) => commands::archive(project_id),
+        RunMode::RESTORE(project_id) => commands::restore(project_id),
     }
 }
