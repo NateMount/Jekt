@@ -48,12 +48,11 @@ pub fn list(){
 
     if index.project.len() == 0 {
         println!("\x1b[1;32m[#]\x1b[0m You currently have no projects, use: \x1b[3;1mjekt new \x1b[3;34m`projectId` `path`\x1b[0m");
-        return;
-    }
-
-    println!("\t\x1b[1;4;34mProjectId\x1b[0m\t\x1b[1;4mDescription\x1b[0m");
-    for project in index.project {
-        println!(">>\t\x1b[1;34m[\x1b[0m {} \x1b[1;34m]\x1b[0m\t\x1b[3m{}\x1b[0m", project.id, project.desc);
+    } else {
+        println!("\t\x1b[1;4;34mProjectId\x1b[0m\t\x1b[1;4mDescription\x1b[0m");
+        for project in index.project {
+            println!(">>\t\x1b[1;34m[\x1b[0m {} \x1b[1;34m]\x1b[0m\t\x1b[3m{}\x1b[0m", project.id, project.desc);
+        }
     }
 }
 
@@ -79,10 +78,14 @@ pub fn new(project_id: String, path: String, description: String) -> Result<(), 
     let index: ProjectIndex = load_projects();
 
     if index.project.iter().any(|project| project.id.to_ascii_lowercase() == project_id.to_ascii_lowercase() ) {
+
         println!("\x1b[1;31m[!]\x1b[0m Project with name \x1b[3;34m`{}`\x1b[0m already exists, cannot add project", project_id);
         Ok(())
+
     } else {
+
         println!("\x1b[1;32m[#]\x1b[0m Creating project \x1b[3;34m`{}`\x1b[0m", project_id);
+        
         let project = toml::to_string( &Project {
             id: project_id, desc: description, 
             stack: vec![], tags: vec![], 
@@ -93,7 +96,9 @@ pub fn new(project_id: String, path: String, description: String) -> Result<(), 
 
         let mut write_out = fs::File::options().append(true).create(true).open(INDEX_PATH)?;
         writeln!(write_out, "\n[[project]]\n{}\n", project)?;
+        
         Ok(())
+
     }
 }
 
@@ -103,7 +108,7 @@ pub fn path(project_id: String){
     for project in index.project {
         if project.id.to_ascii_lowercase() == project_id.to_ascii_lowercase() {
             println!("\x1b[1;32m[#]\x1b[0m \x1b[1;34m[\x1b[0m {} \x1b[1;34m]\x1b[0m @ {}", project.id, project.path);
-            return
+            return;
         }
     }
 
