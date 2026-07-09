@@ -10,6 +10,7 @@ use chrono::Utc;
 // === Constants
 // TODO: Replace with full install path
 const INDEX_PATH: &str  = "./resources/jekt-index.toml";
+const ARCHIVE_PATH: &str = "./resources/ject-archive.toml";
 
 // === Structs
 
@@ -41,13 +42,19 @@ fn load_projects() -> ProjectIndex {
     }
 }
 
+fn write_project(project: Project) -> Result<(), std::io::Error> {
+    let mut write_out = fs::File::options().append(true).create(true).open(INDEX_PATH)?;
+    writeln!(write_out, "\n[[project]]\n{}\n", toml::to_string(&project).expect("\x1b[1;31m[!]\x1b[0m Unable to generate TOML formatted project"))?;
+    Ok(())
+}
+
 // === Command Functions
 
 pub fn list(){
     let index: ProjectIndex = load_projects();
 
     if index.project.len() == 0 {
-        println!("\x1b[1;32m[#]\x1b[0m You currently have no projects, use: \x1b[3;1mjekt new \x1b[3;34m`projectId` `path`\x1b[0m");
+        println!("\x1b[1;32m[#]\x1b[0m You currently have no projects, use: \x1b[3;1mjekt new \x1b[3;34m`projectId` `path` `description`\x1b[0m");
     } else {
         println!("\t\x1b[1;4;34mProjectId\x1b[0m\t\x1b[1;4mDescription\x1b[0m");
         for project in index.project {
@@ -57,9 +64,8 @@ pub fn list(){
 }
 
 pub fn info(project_id: String){
-    let index: ProjectIndex = load_projects();
-
-    for project in index.project{
+    
+    for project in load_projects().project{
         if project.id.to_ascii_lowercase() == project_id.to_ascii_lowercase(){
             println!("\x1b[1;34m[\x1b[0m {} \x1b[1;34m]\x1b[0m: \x1b[1;32m( STARTED\x1b[0m {} \x1b[1;32m)\x1b[0m", project.id, project.start_date);
             println!("\t\x1b[1;35m[\x1b[0m \x1b[4mDescription\x1b[0m \x1b[1;35m]\x1b[0m: \x1b[3m{}\x1b[0m", project.desc);
@@ -74,38 +80,32 @@ pub fn info(project_id: String){
     println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
 }
 
-pub fn new(project_id: String, path: String, description: String) -> Result<(), std::io::Error>{
+pub fn new(project_id: String, path: String, description: String){
     let index: ProjectIndex = load_projects();
 
     if index.project.iter().any(|project| project.id.to_ascii_lowercase() == project_id.to_ascii_lowercase() ) {
-
         println!("\x1b[1;31m[!]\x1b[0m Project with name \x1b[3;34m`{}`\x1b[0m already exists, cannot add project", project_id);
-        Ok(())
-
     } else {
 
         println!("\x1b[1;32m[#]\x1b[0m Creating project \x1b[3;34m`{}`\x1b[0m", project_id);
         
-        let project = toml::to_string( &Project {
+        match write_project( Project {
             id: project_id, desc: description, 
             stack: vec![], tags: vec![], 
             path: path, 
             state: String::from("New"), 
             start_date: Utc::now().to_rfc3339()
-        }).expect("\x1b[1;31m[!]\x1b[0m Unable to generate TOML formatted project");
-
-        let mut write_out = fs::File::options().append(true).create(true).open(INDEX_PATH)?;
-        writeln!(write_out, "\n[[project]]\n{}\n", project)?;
-        
-        Ok(())
+        }) {
+            Ok(_) => println!("\x1b[1;32m[#]\x1b[0m Project added to index"),
+            Err(error) => println!("\x1b[1;31m[!]\x1b[0m Error in building new project:\n{}\n", error)
+        }
 
     }
 }
 
 pub fn path(project_id: String){
-    let index: ProjectIndex = load_projects();
 
-    for project in index.project {
+    for project in load_projects().project {
         if project.id.to_ascii_lowercase() == project_id.to_ascii_lowercase() {
             println!("\x1b[1;32m[#]\x1b[0m \x1b[1;34m[\x1b[0m {} \x1b[1;34m]\x1b[0m @ {}", project.id, project.path);
             return;
