@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 // TODO: Replace with full install path
 const INDEX_PATH: &str  = "./resources/jekt-index.toml";
 
-// Structs
+// === Structs
 
 #[derive(Debug, Deserialize, Serialize)]
 struct Project {
@@ -66,7 +66,7 @@ pub fn info(project_id: String){
     println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
 }
 
-pub fn new(project_id: String, path: String) {
+pub fn new(project_id: String, _path: String) {
 
     let index: ProjectIndex = load_projects();
 
