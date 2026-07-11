@@ -42,9 +42,11 @@ fn load_index(index: &str) -> ProjectIndex {
     }
 }
 
-fn write_project(project: Project) -> Result<(), std::io::Error> {
+fn write_project(projects: Vec<Project>) -> Result<(), std::io::Error> {
     let mut write_out = fs::File::options().append(true).create(true).open(INDEX_PATH)?;
-    writeln!(write_out, "\n[[project]]\n{}\n", toml::to_string(&project).expect("\x1b[1;31m[!]\x1b[0m Unable to generate TOML formatted project"))?;
+    for project in projects {
+        writeln!(write_out, "\n[[project]]\n{}\n", toml::to_string(&project).expect("\x1b[1;31m[!]\x1b[0m Unable to generate TOML formatted project"))?;
+    }
     Ok(())
 }
 
@@ -89,13 +91,13 @@ pub fn new(project_id: String, path: String, description: String){
 
         println!("\x1b[1;32m[#]\x1b[0m Creating project \x1b[3;34m`{}`\x1b[0m", project_id);
         
-        match write_project( Project {
+        match write_project( vec![Project {
             id: project_id, desc: description, 
             stack: vec![], tags: vec![], 
             path: path, 
             state: String::from("New"), 
             start_date: Utc::now().to_rfc3339()
-        }) {
+        }]) {
             Ok(_) => println!("\x1b[1;32m[#]\x1b[0m Project added to index"),
             Err(error) => println!("\x1b[1;31m[!]\x1b[0m Error in building new project:\n{}\n", error)
         }
@@ -135,11 +137,9 @@ pub fn delete(project_id: String){
                 Err(_) => println!("\x1b[1;31m[!]\x1b[0m Error saving updated index")
             }
 
-            for keeper in index.project {
-                match write_project(keeper){
-                    Ok(_) => println!("\x1b[1;33m[#]\x1b[0m Saved project"),
-                    Err(_) => println!("\x1b[1;31m[!]\x1b[0m Could not save project")
-                }
+            match write_project(index.project){
+                Ok(_) => println!("\x1b[1;32m[#]\x1b[0m Removed project and updated index"),
+                Err(_) => println!("\x1b[1;31m[!]\x1b[0m Could not save project")
             }
 
             return;
