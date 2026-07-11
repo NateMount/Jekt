@@ -1,21 +1,19 @@
 // [Jekt:Commands]
 
 // === Imports
-
-use std::fs;
-use std::io::Write;
 use serde::{Deserialize, Serialize};
 use chrono::Utc;
+use crate::utils::fileops::{load_source, write_project, blank_source};
 
 // === Constants
 // TODO: Replace with full install path
-const INDEX_PATH: &str  = "./resources/jekt-index.toml";
-const ARCHIVE_PATH: &str = "./resources/ject-archive.toml";
+const INDEX_PATH: &str = "./resources/jekt-index.toml";
+const ARCHIVE_PATH: &str = "./resources/jekt-archive.toml";
 
 // === Structs
 
 #[derive(Debug, Deserialize, Serialize)]
-struct Project {
+pub struct Project {
     id: String,
     desc: String,
     stack: Vec<String>,
@@ -26,36 +24,16 @@ struct Project {
 }
 
 #[derive(Debug, Deserialize)]
-struct ProjectIndex {
-    project: Vec<Project>
-}
-
-// === Functions
-
-fn load_index(index: &str) -> ProjectIndex {
-    let index_data = fs::read_to_string(index)
-    .expect(&format!("\x1b[1;31m[!]\x1b[0m Jekt-Index file cannot be accessed \x1b[3;34m@{}\x1b[0m\n", INDEX_PATH));
-
-    match toml::from_str(&index_data) {
-        Ok(index) => index,
-        Err(_) => ProjectIndex { project: vec![] }
-    }
-}
-
-fn write_project(projects: Vec<Project>) -> Result<(), std::io::Error> {
-    let mut write_out = fs::File::options().append(true).create(true).open(INDEX_PATH)?;
-    for project in projects {
-        writeln!(write_out, "\n[[project]]\n{}\n", toml::to_string(&project).expect("\x1b[1;31m[!]\x1b[0m Unable to generate TOML formatted project"))?;
-    }
-    Ok(())
+pub struct ProjectIndex {
+    pub project: Vec<Project>
 }
 
 // === Command Functions
 
 pub fn list(){
-    let index: ProjectIndex = load_index(INDEX_PATH);
+    let index: ProjectIndex = load_source(INDEX_PATH);
 
-    if index.project.len() == 0 {
+    if index.project.is_empty() {
         println!("\x1b[1;32m[#]\x1b[0m You currently have no projects, use: \x1b[3;1mjekt new \x1b[3;34m`projectId` `path` `description`\x1b[0m");
     } else {
         println!("\t\x1b[1;4;34mProjectId\x1b[0m\t\x1b[1;4mDescription\x1b[0m");
@@ -67,7 +45,7 @@ pub fn list(){
 
 pub fn info(project_id: String){
     
-    for project in load_index(INDEX_PATH).project{
+    for project in load_source(INDEX_PATH).project{
         if project.id.to_ascii_lowercase() == project_id.to_ascii_lowercase(){
             println!("\x1b[1;34m[\x1b[0m {} \x1b[1;34m]\x1b[0m: \x1b[1;32m( STARTED\x1b[0m {} \x1b[1;32m)\x1b[0m", project.id, project.start_date);
             println!("\t\x1b[1;35m[\x1b[0m \x1b[4mDescription\x1b[0m \x1b[1;35m]\x1b[0m: \x1b[3m{}\x1b[0m", project.desc);
@@ -83,12 +61,11 @@ pub fn info(project_id: String){
 }
 
 pub fn new(project_id: String, path: String, description: String){
-    let index: ProjectIndex = load_index(INDEX_PATH);
+    let index: ProjectIndex = load_source(INDEX_PATH);
 
     if index.project.iter().any(|project| project.id.to_ascii_lowercase() == project_id.to_ascii_lowercase() ) {
         println!("\x1b[1;31m[!]\x1b[0m Project with name \x1b[3;34m`{}`\x1b[0m already exists, cannot add project", project_id);
     } else {
-
         println!("\x1b[1;32m[#]\x1b[0m Creating project \x1b[3;34m`{}`\x1b[0m", project_id);
         
         match write_project( vec![Project {
@@ -97,7 +74,7 @@ pub fn new(project_id: String, path: String, description: String){
             path: path, 
             state: String::from("New"), 
             start_date: Utc::now().to_rfc3339()
-        }]) {
+        }], INDEX_PATH) {
             Ok(_) => println!("\x1b[1;32m[#]\x1b[0m Project added to index"),
             Err(error) => println!("\x1b[1;31m[!]\x1b[0m Error in building new project:\n{}\n", error)
         }
@@ -107,7 +84,7 @@ pub fn new(project_id: String, path: String, description: String){
 
 pub fn path(project_id: String){
 
-    for project in load_index(INDEX_PATH).project {
+    for project in load_source(INDEX_PATH).project {
         if project.id.to_ascii_lowercase() == project_id.to_ascii_lowercase() {
             println!("\x1b[1;32m[#]\x1b[0m \x1b[1;34m[\x1b[0m {} \x1b[1;34m]\x1b[0m @ {}", project.id, project.path);
             return;
@@ -124,7 +101,7 @@ pub fn delete(project_id: String){
         return;
     }
 
-    let mut index: ProjectIndex = load_index(INDEX_PATH);
+    let mut index: ProjectIndex = load_source(INDEX_PATH);
 
     for (idx, project) in index.project.iter().enumerate() {
         if project.id.to_ascii_lowercase() == project_id.to_ascii_lowercase() {
@@ -132,12 +109,26 @@ pub fn delete(project_id: String){
             println!("\x1b[1;32m[#]\x1b[0m Deleting \x1b[3;34m`{}`\x1b[0m", project_id);
             index.project.remove(idx);
 
-            match fs::File::create(INDEX_PATH){
-                Ok(_) => println!("\x1b[1;33m[%]\x1b[0m Saving updated index"),
-                Err(_) => println!("\x1b[1;31m[!]\x1b[0m Error saving updated index")
+            blank_source(INDEX_PATH);
+            match write_project(index.project, INDEX_PATH){
+                Ok(_) => println!("\x1b[1;32m[#]\x1b[0m Removed project and updated index"),
+                Err(_) => println!("\x1b[1;31m[!]\x1b[0m Could not save project")
             }
 
-            match write_project(index.project){
+            return;
+        }
+    }
+
+    index = load_source(ARCHIVE_PATH);
+
+    for (idx, project) in index.project.iter().enumerate() {
+        if project.id.to_ascii_lowercase() == project_id.to_ascii_lowercase() {
+
+            println!("\x1b[1;32m[#]\x1b[0m Deleting \x1b[3;34m`{}`\x1b[0m", project_id);
+            index.project.remove(idx);
+
+            blank_source(ARCHIVE_PATH);
+            match write_project(index.project, ARCHIVE_PATH){
                 Ok(_) => println!("\x1b[1;32m[#]\x1b[0m Removed project and updated index"),
                 Err(_) => println!("\x1b[1;31m[!]\x1b[0m Could not save project")
             }
@@ -151,12 +142,75 @@ pub fn delete(project_id: String){
 
 pub fn archive(project_id: String){
 
-    let index: ProjectIndex = load_index(ARCHIVE_PATH);
+    if project_id == "_na" {
+        let index: ProjectIndex = load_source(ARCHIVE_PATH);
 
+        if index.project.is_empty() { println!("\x1b[1;32m[#]\x1b[0m You currently have no archived projects"); }
+        else {
+            println!("\t\x1b[1;4;34mProjectId\x1b[0m\t\x1b[1;4mDescription\x1b[0m");
+            for project in index.project {
+                println!(">>\t\x1b[1;34m[\x1b[0m {} \x1b[1;34m]\x1b[0m\t\x1b[3m{}\x1b[0m", project.id, project.desc);
+            }
+        }
+
+    } else {
+
+        let mut index:ProjectIndex = load_source(INDEX_PATH);
+
+        for (idx, project) in index.project.iter().enumerate() {
+            if project_id.to_ascii_lowercase() == project.id.to_ascii_lowercase() {
+
+                let swap:Project = index.project.remove(idx);
+
+                blank_source(INDEX_PATH);
+                match write_project(index.project, INDEX_PATH){
+                    Ok(_) => println!("\x1b[1;32m[#]\x1b[0m Removed project and updated index"),
+                    Err(_) => println!("\x1b[1;31m[!]\x1b[0m Could not save project")
+                }
+
+                match write_project(vec![swap], ARCHIVE_PATH){
+                    Ok(_) => println!("\x1b[1;32m[#]\x1b[0m Moved project into archive"),
+                    Err(_) => println!("\x1b[1;31m[!]\x1b[0m Could not move project")
+                }
+
+                return;        
+            }
+        }
+
+        println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
+    }
 }
 
 pub fn restore(project_id: String){
 
-    let index: ProjectIndex = load_index(ARCHIVE_PATH);
-    
+    if project_id == "_na" { 
+        println!("\x1b[1;33m[%]\x1b[0m The resore command is used to move a project from your archive to active index ");
+    } else {
+        
+        let mut index:ProjectIndex = load_source(ARCHIVE_PATH);
+
+        for (idx, project) in index.project.iter().enumerate() {
+            if project_id.to_ascii_lowercase() == project.id.to_ascii_lowercase() {
+
+                println!("\x1b[1;32m[#]\x1b[0m Restoring \x1b[1;34m`{}`\x1b[0m", project_id);
+                
+                let swap:Project = index.project.remove(idx);
+
+                blank_source(ARCHIVE_PATH);
+                match write_project(index.project, ARCHIVE_PATH) {
+                    Ok(_) => println!("\x1b[1;32m[#]\x1b[0m Removed project and updated archive"),
+                    Err(_) => println!("\x1b[1;31m[!]\x1b[0m Could not save project")
+                }
+
+                match write_project(vec![swap], INDEX_PATH) {
+                    Ok(_) => println!("\x1b[1;32m[#]\x1b[0m Updated index with restored project"),
+                    Err(_) => println!("\x1b[1;31m[!]\x1b[0m Could not save project")
+                }
+
+                return;
+            }
+        }
+
+        println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
+    }
 }

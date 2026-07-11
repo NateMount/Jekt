@@ -1,6 +1,7 @@
 // [Utils: Generic]
 
 pub mod argparse;
+pub mod fileops;
 
 pub fn display_help() {
     println!("
