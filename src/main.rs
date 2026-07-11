@@ -19,5 +19,6 @@ fn main(){
         RunMode::DELETE(project_id) => commands::delete(project_id),
         RunMode::ARCHIVE(project_id) => commands::archive(project_id),
         RunMode::RESTORE(project_id) => commands::restore(project_id),
+        RunMode::CLEAR => commands::clear(),
     }
 }

@@ -5,6 +5,7 @@ use std::env::args;
 pub enum RunMode {
     HELP,
     LIST,
+    CLEAR,
     INFO(String),
     PATH(String),
     NEW(String, String, String),
@@ -40,6 +41,7 @@ pub fn build_run_config() -> RunMode{
         "restore" | "revive" => RunMode::RESTORE(
             cli_arg.get(2).unwrap_or(&String::from("_na")).clone()
         ),
+        "clear" | "cl" => RunMode::CLEAR,
         _ => RunMode::HELP
     }
 }

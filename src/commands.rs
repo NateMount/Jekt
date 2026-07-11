@@ -214,3 +214,11 @@ pub fn restore(project_id: String){
         println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
     }
 }
+
+pub fn clear() {
+
+    println!("\x1b[1;32m[#]\x1b[0m Clearing sources");
+    blank_source(INDEX_PATH);
+    blank_source(ARCHIVE_PATH);
+
+}
