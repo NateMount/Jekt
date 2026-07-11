@@ -11,7 +11,8 @@ pub enum RunMode {
     NEW(String, String, String),
     DELETE(String),
     ARCHIVE(String),
-    RESTORE(String)
+    RESTORE(String),
+    SET(String, String, String)
 }
 
 pub fn build_run_config() -> RunMode{
@@ -21,6 +22,7 @@ pub fn build_run_config() -> RunMode{
 
     match cli_arg[1].to_lowercase().as_str() {
         "list" | "ls" => RunMode::LIST,
+        "clear" | "cl" => RunMode::CLEAR,
         "info" => RunMode::INFO(
             cli_arg.get(2).unwrap_or(&String::from("*")).clone()
         ),
@@ -41,7 +43,11 @@ pub fn build_run_config() -> RunMode{
         "restore" | "revive" => RunMode::RESTORE(
             cli_arg.get(2).unwrap_or(&String::from("_na")).clone()
         ),
-        "clear" | "cl" => RunMode::CLEAR,
+        "set" => RunMode::SET(
+            cli_arg.get(2).unwrap_or(&String::from("_na")).clone(),
+            cli_arg.get(3).unwrap_or(&String::from("_na")).clone(),
+            cli_arg.get(4).unwrap_or(&String::from("")).clone()
+        ),
         _ => RunMode::HELP
     }
 }

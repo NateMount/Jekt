@@ -13,12 +13,13 @@ fn main(){
     match mode {
         RunMode::HELP => display_help(),
         RunMode::LIST => commands::list(),
+        RunMode::CLEAR => commands::clear(),
         RunMode::INFO(project_id) => commands::info(project_id),
         RunMode::NEW(project_id, path, description) => commands::new(project_id, path, description),
         RunMode::PATH(project_id) => commands::path(project_id),
         RunMode::DELETE(project_id) => commands::delete(project_id),
         RunMode::ARCHIVE(project_id) => commands::archive(project_id),
         RunMode::RESTORE(project_id) => commands::restore(project_id),
-        RunMode::CLEAR => commands::clear(),
+        RunMode::SET(project_id,key , value) => commands::set(project_id, key, value),
     }
 }
