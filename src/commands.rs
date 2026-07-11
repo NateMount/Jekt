@@ -43,6 +43,14 @@ pub fn list(){
     }
 }
 
+pub fn clear() {
+
+    println!("\x1b[1;32m[#]\x1b[0m Clearing sources");
+    blank_source(INDEX_PATH);
+    blank_source(ARCHIVE_PATH);
+
+}
+
 pub fn info(project_id: String){
     
     for project in load_source(INDEX_PATH).project{
@@ -215,10 +223,50 @@ pub fn restore(project_id: String){
     }
 }
 
-pub fn clear() {
+pub fn set(project_id:String, key:String, value: String){
 
-    println!("\x1b[1;32m[#]\x1b[0m Clearing sources");
-    blank_source(INDEX_PATH);
-    blank_source(ARCHIVE_PATH);
+    if project_id == String::from("_na") {
+        println!("\x1b[1;33m[%]\x1b[0m Usage: jekt update \x1b[3;34m`projectId`\x1b[0m \x1b[3;34m`key`\x1b[0m \x1b[3;34m`value`\x1b[0m");
+        return;
+    }
 
+    if key == String::from("_na") {
+        println!("\x1b[1;33m[%]\x1b[0m Potential project keys include:");
+        for key_inf in vec![
+            (" Desc  ", "Description for project"), 
+            (" Stack ", "List of technology / tools / languages used in project"),
+            (" Tag   ", "Tag to be used to describe project or aid in searching for project"),
+            (" Path  ", "File path to root of project"),
+            (" State ", "User-defined state of project"),
+        ]{ println!("  (\x1b[1;33m{}\x1b[0m):\t{}", key_inf.0, key_inf.1) }
+        return;
+    }
+
+    let mut index: ProjectIndex = load_source(INDEX_PATH);
+
+    for (idx, project) in index.project.iter().enumerate() {
+        if project_id.to_ascii_lowercase() == project.id.to_ascii_lowercase() {
+
+            let mut active: Project = index.project.remove(idx);
+
+            blank_source(INDEX_PATH);
+            write_project(index.project, INDEX_PATH).expect("");
+
+            match key.to_ascii_lowercase().as_str() {
+                "desk" | "description" => active.desc = value,
+                "stack" => active.stack.push(value),
+                "tag" | "tags" => active.tags.push(value),
+                "path" => active.path = value,
+                "state" | "status" => active.state = value,
+                _ => println!("\x1b[1;31m[!]\x1b[0m Unrecognized key!")
+            }
+
+            write_project(vec![active], INDEX_PATH).expect("");
+
+            return;
+        }
+    }
+
+
+    println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
 }
