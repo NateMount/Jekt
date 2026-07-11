@@ -24,15 +24,15 @@ pub fn build_run_config() -> RunMode{
         "info" => RunMode::INFO(
             cli_arg.get(2).unwrap_or(&String::from("*")).clone()
         ),
-        "path" | "." => RunMode::PATH(
+        "path" | "src" => RunMode::PATH(
             cli_arg.get(2).unwrap_or(&String::from("*")).clone()
         ),
-        "new" | "+" => RunMode::NEW(
+        "new" | "add" => RunMode::NEW(
             cli_arg.get(2).unwrap_or(&String::from("_na")).clone(),
             cli_arg.get(3).unwrap_or(&String::from(".")).clone(),
             cli_arg.get(4).unwrap_or(&String::from("")).clone()
         ),
-        "delete" | "-" => RunMode::DELETE(
+        "delete" | "del" => RunMode::DELETE(
             cli_arg.get(2).unwrap_or(&String::from("_na")).clone()
         ),
         "archive" => RunMode::ARCHIVE(
