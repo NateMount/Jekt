@@ -115,6 +115,40 @@ pub fn path(project_id: String){
     println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
 }
 
+pub fn delete(project_id: String){
+
+    if project_id == String::from("_na") {
+        println!("\x1b[1;33m[%]\x1b[0m The delete command is used to remove a project from the indexer \x1b[1;34m(\x1b[0m \x1b[3mNo project content will be deleted\x1b[0m \x1b[1;34m)\x1b[0m");
+        return;
+    }
+
+    let mut index: ProjectIndex = load_index(INDEX_PATH);
+
+    for (idx, project) in index.project.iter().enumerate() {
+        if project.id.to_ascii_lowercase() == project_id.to_ascii_lowercase() {
+
+            println!("\x1b[1;32m[#]\x1b[0m Deleting \x1b[3;34m`{}`\x1b[0m", project_id);
+            index.project.remove(idx);
+
+            match fs::File::create(INDEX_PATH){
+                Ok(_) => println!("\x1b[1;33m[%]\x1b[0m Saving updated index"),
+                Err(_) => println!("\x1b[1;31m[!]\x1b[0m Error saving updated index")
+            }
+
+            for keeper in index.project {
+                match write_project(keeper){
+                    Ok(_) => println!("\x1b[1;33m[#]\x1b[0m Saved project"),
+                    Err(_) => println!("\x1b[1;31m[!]\x1b[0m Could not save project")
+                }
+            }
+
+            return;
+        }
+    }
+
+    println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
+}
+
 pub fn archive(project_id: String){
 
     let index: ProjectIndex = load_index(ARCHIVE_PATH);
