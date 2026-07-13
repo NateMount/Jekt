@@ -86,7 +86,6 @@ pub fn new(project_id: String, path: String, description: String){
             Ok(_) => println!("\x1b[1;32m[#]\x1b[0m Project added to index"),
             Err(error) => println!("\x1b[1;31m[!]\x1b[0m Error in building new project:\n{}\n", error)
         }
-
     }
 }
 
@@ -253,7 +252,7 @@ pub fn set(project_id:String, key:String, value: String){
             write_project(index.project, INDEX_PATH).expect("");
 
             match key.to_ascii_lowercase().as_str() {
-                "desk" | "description" => active.desc = value,
+                "desc" | "description" => active.desc = value,
                 "stack" => active.stack.push(value),
                 "tag" | "tags" => active.tags.push(value),
                 "path" => active.path = value,
@@ -267,6 +266,53 @@ pub fn set(project_id:String, key:String, value: String){
         }
     }
 
+    println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
+}
+
+pub fn pop (project_id: String, key: String, value: String){
+
+    if project_id == String::from("_na") {
+        println!("\x1b[1;33m[%]\x1b[0m Pop command is used to pop a value from a specified project, thereby removing it");
+        return;
+    }
+
+    if key == String::from("_na") {
+        println!("\x1b[1;33m[%]\x1b[0m Potential project keys to pop:");
+        for key_inf in vec![
+            (" Desc  ", "Description for project"), 
+            (" Stack ", "List of technology / tools / languages used in project"),
+            (" Tag   ", "Tag to be used to describe project or aid in searching for project"),
+            (" Path  ", "File path to root of project"),
+            (" State ", "User-defined state of project"),
+        ]{ println!("  (\x1b[1;33m{}\x1b[0m):\t{}", key_inf.0, key_inf.1) }
+        return;
+    }
+
+    let mut index: ProjectIndex = load_source(INDEX_PATH);
+
+    for (idx, project) in index.project.iter().enumerate() {
+        if project_id.to_ascii_lowercase() == project.id.to_ascii_lowercase() {
+
+            let mut active: Project = index.project.remove(idx);
+
+            blank_source(INDEX_PATH);
+            write_project(index.project, INDEX_PATH).expect("");
+
+            match key.to_ascii_lowercase().as_str() {
+                "desc" | "description" => active.desc = String::from(""),
+                "stack" => active.stack.retain(|stk| stk.to_ascii_lowercase() != value.to_ascii_lowercase()),
+                "tag" | "tags" => active.tags.retain(|tag| tag.to_ascii_lowercase() != value.to_ascii_lowercase()),
+                "path" => active.path = String::from(""),
+                "state" | "status" => active.state = String::from(""),
+                _ => println!("\x1b[1;31m[!]\x1b[0m Unrecognized key!")
+            }
+
+            write_project(vec![active], INDEX_PATH).expect("");
+
+            return;
+        }
+    }
 
     println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
+
 }

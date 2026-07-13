@@ -21,5 +21,6 @@ fn main(){
         RunMode::ARCHIVE(project_id) => commands::archive(project_id),
         RunMode::RESTORE(project_id) => commands::restore(project_id),
         RunMode::SET(project_id,key , value) => commands::set(project_id, key, value),
+        RunMode::POP(project_id, key, value) => commands::pop(project_id, key, value)
     }
 }

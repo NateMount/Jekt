@@ -12,7 +12,8 @@ pub enum RunMode {
     DELETE(String),
     ARCHIVE(String),
     RESTORE(String),
-    SET(String, String, String)
+    SET(String, String, String),
+    POP(String, String, String)
 }
 
 pub fn build_run_config() -> RunMode{
@@ -24,10 +25,10 @@ pub fn build_run_config() -> RunMode{
         "list" | "ls" => RunMode::LIST,
         "clear" | "cl" => RunMode::CLEAR,
         "info" => RunMode::INFO(
-            cli_arg.get(2).unwrap_or(&String::from("*")).clone()
+            cli_arg.get(2).unwrap_or(&String::from("")).clone()
         ),
         "path" | "src" => RunMode::PATH(
-            cli_arg.get(2).unwrap_or(&String::from("*")).clone()
+            cli_arg.get(2).unwrap_or(&String::from("")).clone()
         ),
         "new" | "add" => RunMode::NEW(
             cli_arg.get(2).unwrap_or(&String::from("_na")).clone(),
@@ -44,6 +45,11 @@ pub fn build_run_config() -> RunMode{
             cli_arg.get(2).unwrap_or(&String::from("_na")).clone()
         ),
         "set" => RunMode::SET(
+            cli_arg.get(2).unwrap_or(&String::from("_na")).clone(),
+            cli_arg.get(3).unwrap_or(&String::from("_na")).clone(),
+            cli_arg.get(4).unwrap_or(&String::from("")).clone()
+        ),
+        "pop" => RunMode::POP(
             cli_arg.get(2).unwrap_or(&String::from("_na")).clone(),
             cli_arg.get(3).unwrap_or(&String::from("_na")).clone(),
             cli_arg.get(4).unwrap_or(&String::from("")).clone()
