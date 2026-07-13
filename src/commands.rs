@@ -316,3 +316,18 @@ pub fn pop (project_id: String, key: String, value: String){
     println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
 
 }
+
+pub fn search(key: String){
+
+    for project in load_source(INDEX_PATH).project {
+        if project.id.to_ascii_lowercase().contains(&key.to_ascii_lowercase()) || project.tags.iter().any(|tag| tag.to_ascii_lowercase().contains(&key.to_ascii_lowercase())) {
+            println!("\x1b[1;34m[\x1b[0m {} \x1b[1;34m]\x1b[0m: \x1b[1;32m( STARTED\x1b[0m {} \x1b[1;32m)\x1b[0m", project.id, project.start_date);
+            println!("\t\x1b[1;35m[\x1b[0m \x1b[4mDescription\x1b[0m \x1b[1;35m]\x1b[0m: \x1b[3m{}\x1b[0m", project.desc);
+            println!("\t\x1b[1;34m(\x1b[0m Path  \x1b[1;34m)\x1b[0m: {}", project.path);
+            println!("\t\x1b[1;34m(\x1b[0m State \x1b[1;34m)\x1b[0m: {}", project.state);
+            println!("\t\x1b[1;34m(\x1b[0m Stack \x1b[1;34m)\x1b[0m: {:?}", project.stack);
+            println!("\t\x1b[1;34m(\x1b[0m Tags  \x1b[1;34m)\x1b[0m: {:?}", project.tags);
+        }
+    }
+
+}

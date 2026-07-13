@@ -13,7 +13,8 @@ pub enum RunMode {
     ARCHIVE(String),
     RESTORE(String),
     SET(String, String, String),
-    POP(String, String, String)
+    POP(String, String, String),
+    SEARCH(String)
 }
 
 pub fn build_run_config() -> RunMode{
@@ -53,6 +54,9 @@ pub fn build_run_config() -> RunMode{
             cli_arg.get(2).unwrap_or(&String::from("_na")).clone(),
             cli_arg.get(3).unwrap_or(&String::from("_na")).clone(),
             cli_arg.get(4).unwrap_or(&String::from("")).clone()
+        ),
+        "search" | "find" => RunMode::SEARCH(
+            cli_arg.get(2).unwrap_or(&String::from("")).clone()
         ),
         _ => RunMode::HELP
     }
