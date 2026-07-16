@@ -14,6 +14,7 @@ fn main(){
         RunMode::HELP => display_help(),
         RunMode::LIST => commands::list(),
         RunMode::CLEAR => commands::clear(),
+        RunMode::VERSION => println!("\x1b[1;32m[#]\x1b[0m Version: 0.0 - InDev"),
         RunMode::INFO(project_id) => commands::info(project_id),
         RunMode::NEW(project_id, path, description) => commands::new(project_id, path, description),
         RunMode::PATH(project_id) => commands::path(project_id),

@@ -6,6 +6,7 @@ pub enum RunMode {
     HELP,
     LIST,
     CLEAR,
+    VERSION,
     INFO(String),
     PATH(String),
     NEW(String, String, String),
@@ -25,6 +26,7 @@ pub fn build_run_config() -> RunMode{
     match cli_arg[1].to_lowercase().as_str() {
         "list" | "ls" => RunMode::LIST,
         "clear" | "cl" => RunMode::CLEAR,
+        "version" | "v" => RunMode::VERSION,
         "info" => RunMode::INFO(
             cli_arg.get(2).unwrap_or(&String::from("")).clone()
         ),
@@ -36,7 +38,7 @@ pub fn build_run_config() -> RunMode{
             cli_arg.get(3).unwrap_or(&String::from(".")).clone(),
             cli_arg.get(4).unwrap_or(&String::from("")).clone()
         ),
-        "delete" | "del" => RunMode::DELETE(
+        "delete" | "del" | "rm" => RunMode::DELETE(
             cli_arg.get(2).unwrap_or(&String::from("_na")).clone()
         ),
         "archive" => RunMode::ARCHIVE(
