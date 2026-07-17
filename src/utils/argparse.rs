@@ -2,6 +2,8 @@
 
 use std::env::args;
 
+/// Collection of possible run-modes for the program
+/// Each mode defines behavior and parameters for current run
 pub enum RunMode {
     HELP,
     LIST,
@@ -18,6 +20,11 @@ pub enum RunMode {
     SEARCH(String)
 }
 
+/// Used to select and populate parameters based on passed in user args
+/// 
+/// **Considerations**
+/// - If no arguments are provided `RunMode:;HELP` is returned
+/// - If passed in `command` arg is not matched then `RunMode::HELP` is returned
 pub fn build_run_config() -> RunMode{
     let cli_arg:Vec<String> = args().collect();
 
@@ -27,7 +34,7 @@ pub fn build_run_config() -> RunMode{
         "list" | "ls" => RunMode::LIST,
         "clear" | "cl" => RunMode::CLEAR,
         "version" | "v" => RunMode::VERSION,
-        "info" => RunMode::INFO(
+        "info" | "inf" => RunMode::INFO(
             cli_arg.get(2).unwrap_or(&String::from("")).clone()
         ),
         "path" | "src" => RunMode::PATH(
