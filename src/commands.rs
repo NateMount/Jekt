@@ -7,8 +7,8 @@ use crate::utils::fileops::{load_source, write_project, blank_source};
 
 // === Constants
 // TODO: Replace with full install path
-const INDEX_PATH: &str = "./resources/jekt-index.toml";
-const ARCHIVE_PATH: &str = "./resources/jekt-archive.toml";
+const INDEX_PATH: &str = "/opt/jekt/jekt-index.toml";
+const ARCHIVE_PATH: &str = "/opt/jekt/jekt-archive.toml";
 
 // === Structs
 
@@ -68,7 +68,7 @@ pub fn info(project_id: String){
     println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
 }
 
-pub fn new(project_id: String, path: String, description: String){
+pub fn new(project_id: String, mut path: String, description: String){
     let index: ProjectIndex = load_source(INDEX_PATH);
 
     if index.project.iter().any(|project| project.id.to_ascii_lowercase() == project_id.to_ascii_lowercase() ) {
@@ -76,6 +76,11 @@ pub fn new(project_id: String, path: String, description: String){
     } else {
         println!("\x1b[1;32m[#]\x1b[0m Creating project \x1b[3;34m`{}`\x1b[0m", project_id);
         
+        if path == String::from("."){
+            let cwd = std::env::current_dir().expect("");
+            path = cwd.into_os_string().into_string().unwrap_or(String::from("?"));
+        }
+
         match write_project( vec![Project {
             id: project_id, desc: description, 
             stack: vec![], tags: vec![], 
