@@ -12,6 +12,7 @@ const ARCHIVE_PATH: &str = "/opt/jekt/jekt-archive.toml";
 
 // === Structs
 
+/// Structure to contain all components of a project
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Project {
     id: String,
@@ -23,6 +24,7 @@ pub struct Project {
     start_date: String,
 }
 
+/// Simple structure to contain a Vec of all projects found in an Index
 #[derive(Debug, Deserialize)]
 pub struct ProjectIndex {
     pub project: Vec<Project>
@@ -30,27 +32,38 @@ pub struct ProjectIndex {
 
 // === Command Functions
 
+/// Lists all projects in active index.
+/// Does not consider any archived projects
+/// 
+/// If no projects exist this function will simply notify the user
 pub fn list(){
     let index: ProjectIndex = load_source(INDEX_PATH);
 
     if index.project.is_empty() {
         println!("\x1b[1;32m[#]\x1b[0m You currently have no projects, use: \x1b[3;1mjekt new \x1b[3;34m`projectId` `path` `description`\x1b[0m");
     } else {
-        println!("\t\x1b[1;4;34mProjectId\x1b[0m\t\x1b[1;4mDescription\x1b[0m");
+        println!("\t\x1b[1;4;34mProjectId\x1b[0m\t\t\x1b[1;4mDescription\x1b[0m");
         for project in index.project {
-            println!(">>\t\x1b[1;34m[\x1b[0m {} \x1b[1;34m]\x1b[0m\t\x1b[3m{}\x1b[0m", project.id, project.desc);
+            println!(">>\t\x1b[1;34m[\x1b[0m {} \x1b[1;34m]\x1b[0m\t\t\x1b[3m{}\x1b[0m", project.id, project.desc);
         }
     }
 }
 
+/// Clears both the active index and the archive
+/// 
+/// Will clear the files located at ` INDEX_PATH ` & ` ARCHIVE_PATH `
 pub fn clear() {
-
     println!("\x1b[1;32m[#]\x1b[0m Clearing sources");
-    blank_source(INDEX_PATH);
-    blank_source(ARCHIVE_PATH);
-
+    blank_source(INDEX_PATH); blank_source(ARCHIVE_PATH);
 }
 
+/// Displays all information on the specified project
+/// 
+/// **Params**
+/// - `project_id` : Unique name of project
+/// 
+/// **Considerations**
+/// - If project_id does not exist this function will simply notify the user that the project could not be found
 pub fn info(project_id: String){
     
     for project in load_source(INDEX_PATH).project{
@@ -68,6 +81,17 @@ pub fn info(project_id: String){
     println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
 }
 
+/// Makes a new project for the user
+/// 
+/// **Params**
+/// - `project_id` : Unique name of the new project
+/// - `path`` : Path to project root ( default is current working directory )
+/// - `description` : Breif description of project purpose
+/// 
+/// **Considerations**
+/// - If `project_id` exists then the new project will not be made and the user will be notified
+/// - If no path is provided, the program will default to the current working directory from where the user has called the command
+/// - If no description is provided then the program will default to an empty description
 pub fn new(project_id: String, mut path: String, description: String){
 
     if project_id == String::from("_na"){
@@ -100,6 +124,13 @@ pub fn new(project_id: String, mut path: String, description: String){
     }
 }
 
+/// Simple command to get the path for the root of a indexed project
+/// 
+/// **Params**
+/// - `project_id` : Unique name of project
+/// 
+/// **Considerations**
+/// - If `project_id` does not exist then the program will inform the user and quit
 pub fn path(project_id: String){
 
     for project in load_source(INDEX_PATH).project {
@@ -112,6 +143,14 @@ pub fn path(project_id: String){
     println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
 }
 
+/// Deletes a project from the project index
+/// 
+/// **Params**
+/// - `project_id` : Unique name of project
+/// 
+/// **Considerations**
+/// - If `project_id` does not exist the program will notify user and exit
+/// - If no `project_id` provided then program will give breif overview of how to use delete command
 pub fn delete(project_id: String){
 
     if project_id == String::from("_na") {
@@ -137,27 +176,18 @@ pub fn delete(project_id: String){
         }
     }
 
-    index = load_source(ARCHIVE_PATH);
-
-    for (idx, project) in index.project.iter().enumerate() {
-        if project.id.to_ascii_lowercase() == project_id.to_ascii_lowercase() {
-
-            println!("\x1b[1;32m[#]\x1b[0m Deleting \x1b[3;34m`{}`\x1b[0m", project_id);
-            index.project.remove(idx);
-
-            blank_source(ARCHIVE_PATH);
-            match write_project(index.project, ARCHIVE_PATH){
-                Ok(_) => println!("\x1b[1;32m[#]\x1b[0m Removed project and updated index"),
-                Err(_) => println!("\x1b[1;31m[!]\x1b[0m Could not save project")
-            }
-
-            return;
-        }
-    }
-
     println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
 }
 
+/// Used to move a project to the project archive
+/// Archiving a project will prevent it from being seen by other commands but keeps the project information
+/// 
+/// **Params**
+/// - `project_id` : Unique name of project
+/// 
+/// **Considerations**
+/// - If no `project_id` provided will simply list all archived projects
+/// - If `project_id` does not exist, program will notify user and stop existing
 pub fn archive(project_id: String){
 
     if project_id == "_na" {
@@ -199,6 +229,14 @@ pub fn archive(project_id: String){
     }
 }
 
+/// Returns a project from archive to active index, allowing operations to be performed on it again
+/// 
+/// **Params**
+/// - `project_id` : Unique name of project
+/// 
+/// **Considerations**
+/// - If no `project_id` provided, program will provide brief overview on the review command
+/// - If `project_id` not in archived projects, program will inform user
 pub fn restore(project_id: String){
 
     if project_id == "_na" { 
@@ -233,6 +271,18 @@ pub fn restore(project_id: String){
     }
 }
 
+/// Sets a project attribute to a value
+/// 
+/// **Params**
+/// - `project_id` : Unique name of the project
+/// - `key` : Name of attribute to be changed
+/// - `value` : New value to be set
+/// 
+/// **Considerations**
+/// - If no `project_id` provided, program will provide usage string for 'set' command
+/// - If `key` is not one of the recognized attributes of a project, program will list all availbile key options
+/// - If `project_id` is not found then the program will inform the user and exit
+/// - If user is setting to `stack` or `tags` then the `value` will be appended to those arrays
 pub fn set(project_id:String, key:String, value: String){
 
     if project_id == String::from("_na") {
@@ -280,6 +330,19 @@ pub fn set(project_id:String, key:String, value: String){
     println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
 }
 
+
+/// Used to remove a value from a project attribute
+/// 
+/// **Params**
+/// - `project_id` : Unique name of the project
+/// - `key` : Name of attribute to be changed
+/// - `value` : Value to be removed ( *only needed when removing `value` from stack / tags* )
+/// 
+/// **Considerations**
+/// - If no `project_id` provided then the program will give breif overview of 'pop' command
+/// - If `key` is not one of the recognized attributes of a project, program will list all availbile key options
+/// - If `project_id` is not found then the program will inform the user and exit
+/// - If user is popping from `stack` or `tags` then the `value` will be removed from those arrays if found
 pub fn pop (project_id: String, key: String, value: String){
 
     if project_id == String::from("_na") {
@@ -328,6 +391,10 @@ pub fn pop (project_id: String, key: String, value: String){
 
 }
 
+/// Used to search for project based on tags or projectId
+/// 
+/// **Params**
+/// - `key` : String to use to search for project in index
 pub fn search(key: String){
 
     for project in load_source(INDEX_PATH).project {
