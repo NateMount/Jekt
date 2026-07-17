@@ -3,6 +3,7 @@
 pub mod argparse;
 pub mod fileops;
 
+/// Displays program help info
 pub fn display_help() {
     println!("
 \x1b[1;35m[ Jekt\x1b[0m::Help \x1b[1;35m]\x1b[0m
