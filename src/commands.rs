@@ -69,6 +69,12 @@ pub fn info(project_id: String){
 }
 
 pub fn new(project_id: String, mut path: String, description: String){
+
+    if project_id == String::from("_na"){
+        println!("\x1b[1;33m[%]\x1b[0m must include a \x1b[1;34m`projectId`\x1b[0m when making new project");
+        return;
+    }
+
     let index: ProjectIndex = load_source(INDEX_PATH);
 
     if index.project.iter().any(|project| project.id.to_ascii_lowercase() == project_id.to_ascii_lowercase() ) {
