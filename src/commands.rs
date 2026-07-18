@@ -424,7 +424,7 @@ pub fn which(){
     let path: String = cwd.into_os_string().into_string().unwrap_or(String::from("/"));
 
     for project in load_source(INDEX_PATH).project.iter() {
-        if project.path.to_ascii_lowercase() == path.to_ascii_lowercase() {
+        if path.to_ascii_lowercase().starts_with(project.path.to_ascii_lowercase().as_str()) {
             println!("\x1b[1;32m[#]\x1b[0m Found project \x1b[1;34m`{}`\x1b[0m at this location", project.id);
             return;
         }
