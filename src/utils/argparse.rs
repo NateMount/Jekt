@@ -9,6 +9,7 @@ pub enum RunMode {
     LIST,
     CLEAR,
     VERSION,
+    WHICH,
     INFO(String),
     PATH(String),
     NEW(String, String, String),
@@ -34,6 +35,7 @@ pub fn build_run_config() -> RunMode{
         "list" | "ls" => RunMode::LIST,
         "clear" | "cl" => RunMode::CLEAR,
         "version" | "v" => RunMode::VERSION,
+        "which" | "?" => RunMode::WHICH,
         "info" | "inf" => RunMode::INFO(
             cli_arg.get(2).unwrap_or(&String::from("")).clone()
         ),

@@ -26,9 +26,7 @@ pub struct Project {
 
 /// Simple structure to contain a Vec of all projects found in an Index
 #[derive(Debug, Deserialize)]
-pub struct ProjectIndex {
-    pub project: Vec<Project>
-}
+pub struct ProjectIndex { pub project: Vec<Project> }
 
 // === Command Functions
 
@@ -49,6 +47,7 @@ pub fn list(){
     }
 }
 
+
 /// Clears both the active index and the archive
 /// 
 /// Will clear the files located at ` INDEX_PATH ` & ` ARCHIVE_PATH `
@@ -56,6 +55,7 @@ pub fn clear() {
     println!("\x1b[1;32m[#]\x1b[0m Clearing sources");
     blank_source(INDEX_PATH); blank_source(ARCHIVE_PATH);
 }
+
 
 /// Displays all information on the specified project
 /// 
@@ -80,6 +80,7 @@ pub fn info(project_id: String){
 
     println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
 }
+
 
 /// Makes a new project for the user
 /// 
@@ -124,6 +125,7 @@ pub fn new(project_id: String, mut path: String, description: String){
     }
 }
 
+
 /// Simple command to get the path for the root of a indexed project
 /// 
 /// **Params**
@@ -142,6 +144,7 @@ pub fn path(project_id: String){
 
     println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
 }
+
 
 /// Deletes a project from the project index
 /// 
@@ -178,6 +181,7 @@ pub fn delete(project_id: String){
 
     println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
 }
+
 
 /// Used to move a project to the project archive
 /// Archiving a project will prevent it from being seen by other commands but keeps the project information
@@ -229,6 +233,7 @@ pub fn archive(project_id: String){
     }
 }
 
+
 /// Returns a project from archive to active index, allowing operations to be performed on it again
 /// 
 /// **Params**
@@ -270,6 +275,7 @@ pub fn restore(project_id: String){
         println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
     }
 }
+
 
 /// Sets a project attribute to a value
 /// 
@@ -391,6 +397,7 @@ pub fn pop (project_id: String, key: String, value: String){
 
 }
 
+
 /// Used to search for project based on tags or projectId
 /// 
 /// **Params**
@@ -408,4 +415,20 @@ pub fn search(key: String){
         }
     }
 
+}
+
+
+pub fn which(){
+
+    let cwd = std::env::current_dir().expect("");
+    let path: String = cwd.into_os_string().into_string().unwrap_or(String::from("/"));
+
+    for project in load_source(INDEX_PATH).project.iter() {
+        if project.path.to_ascii_lowercase() == path.to_ascii_lowercase() {
+            println!("\x1b[1;32m[#]\x1b[0m Found project \x1b[1;34m`{}`\x1b[0m at this location", project.id);
+            return;
+        }
+    }
+
+    println!("\x1b[1;33m[%]\x1b[0m Could not find any project in this path, are you in project root?");
 }
