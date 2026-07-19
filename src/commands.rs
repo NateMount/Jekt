@@ -417,7 +417,11 @@ pub fn search(key: String){
 
 }
 
-
+/// Used to see if the current directory is contained within a project's path
+/// 
+/// **Considerations**
+/// - If the current directory is not contained within any project path then the user will be notified
+/// - Archived projects will not be used for detection
 pub fn which(){
 
     let cwd = std::env::current_dir().expect("");

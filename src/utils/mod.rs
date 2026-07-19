@@ -15,6 +15,7 @@ pub fn display_help() {
 \t\x1b[1;32mhelp\x1b[0m\t\t\t\t\t\tshow this message
 \t\x1b[1;32mversion\x1b[0m\t\t\t\t\t\tshow application version
 \t\x1b[1;32mlist\x1b[0m\t\t\t\t\t\tlist all indexed projects
+\t\x1b[1;32mwhich\x1b[0m\t\t\t\t\t\tShow project that contains current working directory
 \t\x1b[1;32minfo\x1b[0m\t\t\x1b[34m(\x1b[0m projectId \x1b[34m)\x1b[0m\t\t\tshow metadata and info on \x1b[1;34m`projectId`\x1b[0m
 \t\x1b[1;32mpath\x1b[0m\t\t\x1b[34m(\x1b[0m projectId \x1b[34m)\x1b[0m\t\t\tshow full path to \x1b[1;34m`projectId`\x1b[0m
 \t\x1b[1;32mnew\x1b[0m\t\t\x1b[34m(\x1b[0m projectId, path \x1b[34m)\x1b[0m\t\tbuild a new project at \x1b[1;34m`path`\x1b[0m with id \x1b[1;34m`projectId`\x1b[0m
