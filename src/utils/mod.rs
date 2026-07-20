@@ -24,5 +24,10 @@ pub fn display_help() {
 \t\x1b[1;32mpop\x1b[0m\t\t\x1b[34m(\x1b[0m projectId, key, value \x1b[34m)\x1b[0m\tdrop the \x1b[1;34m`value`\x1b[0m of specified \x1b[1;34m`key`\x1b[0m or just empty \x1b[1;34m`key`\x1b[0m for \x1b[1;34m`projectId`\x1b[0m
 \t\x1b[1;32marchive\x1b[0m\t\t\x1b[34m(\x1b[0m projectId \x1b[34m)\x1b[0m\t\t\tmove \x1b[1;34m`projectId`\x1b[0m to the archive (\x1b[3;32m Will not be targetable in commands \x1b[0m)
 \t\x1b[1;32mrestore\x1b[0m\t\t\x1b[34m(\x1b[0m projectId \x1b[34m)\x1b[0m\t\t\tmove \x1b[1;34m`projectId`\x1b[0m to the active project heirarchy
+
+\x1b[1;32m[\x1b[0m Alias Commands \x1b[1;32m]\x1b[0m
+\t\x1b[1;4;32mcommand\x1b\t\t\x1b[4;34margs\x1b[0m\t\t\t\t\x1b[4mdescritpion\x1b[0m
+\t\x1b[1;32mtodo\x1b[0m\t\t\x1b[34m(\x1b[0m projectId, value \x1b[34m)\x1b[0m\t\talias for \x1b[1;35m`set`\x1b[0m, used to add 'todo' items to project
+\t\x1b[1;32mtag\x1b[0m\t\t\x1b[34m(\x1b[0m projectId, value \x1b[34m)\x1b[0m\t\talias for \x1b[1;35m`set`\x1b[0m, used to add 'tag' items to project
     ")
 }
