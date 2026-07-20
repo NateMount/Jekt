@@ -25,5 +25,7 @@ fn main(){
         RunMode::SET(project_id,key , value) => commands::set(project_id, key, value),
         RunMode::POP(project_id, key, value) => commands::pop(project_id, key, value),
         RunMode::SEARCH(key) => commands::search(key),
+        RunMode::TAG(project_id, value) => commands::set(project_id, String::from("tag"), value),
+        RunMode::TODO(project_id, value ) => commands::set(project_id, String::from("todo"), value)
     }
 }

@@ -21,6 +21,7 @@ pub struct Project {
     tags: Vec<String>,
     path: String,
     state: String,
+    todo: Vec<String>,
     start_date: String,
 }
 
@@ -74,6 +75,8 @@ pub fn info(project_id: String){
             println!("\t\x1b[1;34m(\x1b[0m State \x1b[1;34m)\x1b[0m: {}", project.state);
             println!("\t\x1b[1;34m(\x1b[0m Stack \x1b[1;34m)\x1b[0m: {:?}", project.stack);
             println!("\t\x1b[1;34m(\x1b[0m Tags  \x1b[1;34m)\x1b[0m: {:?}", project.tags);
+            println!("\t\x1b[1;34m(\x1b[0m To Do \x1b[1;34m)\x1b[0m:");
+            for todo in project.todo.iter() { println!("\t\t\x1b[1;34m>>\x1b[0m \x1b[3m{}\x1b[0m", todo); }
             return;
         }
     }
@@ -117,6 +120,7 @@ pub fn new(project_id: String, mut path: String, description: String){
             stack: vec![], tags: vec![], 
             path: path, 
             state: String::from("New"), 
+            todo: vec![],
             start_date: Utc::now().to_rfc3339()
         }], INDEX_PATH) {
             Ok(_) => println!("\x1b[1;32m[#]\x1b[0m Project added to index"),
@@ -292,7 +296,7 @@ pub fn restore(project_id: String){
 pub fn set(project_id:String, key:String, value: String){
 
     if project_id == String::from("_na") {
-        println!("\x1b[1;33m[%]\x1b[0m Usage: jekt update \x1b[3;34m`projectId`\x1b[0m \x1b[3;34m`key`\x1b[0m \x1b[3;34m`value`\x1b[0m");
+        println!("\x1b[1;33m[%]\x1b[0m Usage: jekt set \x1b[3;34m`projectId`\x1b[0m \x1b[3;34m`key`\x1b[0m \x1b[3;34m`value`\x1b[0m");
         return;
     }
 
@@ -304,6 +308,7 @@ pub fn set(project_id:String, key:String, value: String){
             (" Tag   ", "Tag to be used to describe project or aid in searching for project"),
             (" Path  ", "File path to root of project"),
             (" State ", "User-defined state of project"),
+            (" Todo  ", "List of things to do on the project")
         ]{ println!("  (\x1b[1;33m{}\x1b[0m):\t{}", key_inf.0, key_inf.1) }
         return;
     }
@@ -322,6 +327,7 @@ pub fn set(project_id:String, key:String, value: String){
                 "desc" | "description" => active.desc = value,
                 "stack" => active.stack.push(value),
                 "tag" | "tags" => active.tags.push(value),
+                "todo" => active.todo.push(value),
                 "path" => active.path = value,
                 "state" | "status" => active.state = value,
                 _ => println!("\x1b[1;31m[!]\x1b[0m Unrecognized key!")
@@ -364,6 +370,7 @@ pub fn pop (project_id: String, key: String, value: String){
             (" Tag   ", "Tag to be used to describe project or aid in searching for project"),
             (" Path  ", "File path to root of project"),
             (" State ", "User-defined state of project"),
+            (" Todo  ", "List of things to do on the project")
         ]{ println!("  (\x1b[1;33m{}\x1b[0m):\t{}", key_inf.0, key_inf.1) }
         return;
     }
@@ -382,6 +389,7 @@ pub fn pop (project_id: String, key: String, value: String){
                 "desc" | "description" => active.desc = String::from(""),
                 "stack" => active.stack.retain(|stk| stk.to_ascii_lowercase() != value.to_ascii_lowercase()),
                 "tag" | "tags" => active.tags.retain(|tag| tag.to_ascii_lowercase() != value.to_ascii_lowercase()),
+                "todo" => active.todo.retain(|stk| stk.to_ascii_lowercase() != value.to_ascii_lowercase()),
                 "path" => active.path = String::from(""),
                 "state" | "status" => active.state = String::from(""),
                 _ => println!("\x1b[1;31m[!]\x1b[0m Unrecognized key!")
