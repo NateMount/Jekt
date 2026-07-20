@@ -422,17 +422,23 @@ pub fn search(key: String){
 /// **Considerations**
 /// - If the current directory is not contained within any project path then the user will be notified
 /// - Archived projects will not be used for detection
-pub fn which(){
+pub fn which(path: String){
 
-    let cwd = std::env::current_dir().expect("");
-    let path: String = cwd.into_os_string().into_string().unwrap_or(String::from("/"));
+    let src: String;
+
+    if path == String::from("_na"){
+        let cwd = std::env::current_dir().expect("");
+        src = cwd.into_os_string().into_string().unwrap_or(String::from("/"));
+    } else {
+        src = path;
+    }
 
     for project in load_source(INDEX_PATH).project.iter() {
-        if path.to_ascii_lowercase().starts_with(project.path.to_ascii_lowercase().as_str()) {
+        if src.to_ascii_lowercase().starts_with(project.path.to_ascii_lowercase().as_str()) {
             println!("\x1b[1;32m[#]\x1b[0m Found project \x1b[1;34m`{}`\x1b[0m at this location", project.id);
             return;
         }
     }
 
-    println!("\x1b[1;33m[%]\x1b[0m Could not find any project in this path, are you in project root?");
+    println!("\x1b[1;33m[%]\x1b[0m Could not find any project in this path");
 }
