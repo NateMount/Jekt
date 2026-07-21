@@ -23,6 +23,7 @@ if [[ $use_custom_loc == "y" ]]; then
     mkdir -p $new_loc;
     touch $new_loc/jekt-index.toml
     touch $new_loc/jekt-archive.toml
+    sed -i 's#/opt/jekt/#$new_loc#g' src/commands.rs
 else 
     printf "\033[1;34m[*]\033[0m Adding Index & Archive to \033[1;34m/opt/jekt/\033[0m\n"
     sudo mkdir -p /opt/jekt;
