@@ -9,6 +9,7 @@ pub enum RunMode {
     LIST,
     CLEAR,
     VERSION,
+    DOC(String),
     DEBUG(String),
     TODO(String, String),
     TAG(String, String),
@@ -38,6 +39,9 @@ pub fn build_run_config() -> RunMode{
         "list" | "ls" => RunMode::LIST,
         "clear" | "cl" => RunMode::CLEAR,
         "version" | "v" => RunMode::VERSION,
+        "doc" => RunMode::DOC(
+            cli_arg.get(2).unwrap_or(&String::from("_na")).clone()
+        ),
         "dbg" | "debug" => RunMode::DEBUG(
             cli_arg.get(2).unwrap_or(&String::from("_na")).clone()
         ),

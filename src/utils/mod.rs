@@ -2,6 +2,7 @@
 
 pub mod argparse;
 pub mod fileops;
+pub mod doc;
 
 /// Displays program help info
 pub fn display_help() {
