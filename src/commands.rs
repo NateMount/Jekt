@@ -141,7 +141,7 @@ pub fn path(project_id: String){
 
     for project in load_source(INDEX_PATH).project {
         if project.id.to_ascii_lowercase() == project_id.to_ascii_lowercase() {
-            println!("\x1b[1;32m[#]\x1b[0m \x1b[1;34m[\x1b[0m {} \x1b[1;34m]\x1b[0m @ {}", project.id, project.path);
+            println!("{}", project.path);
             return;
         }
     }
