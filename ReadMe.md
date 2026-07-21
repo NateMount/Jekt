@@ -3,7 +3,7 @@
 <div align="center">
   <img src="https://img.shields.io/badge/Language-Rust-ea4a35?style=for-the-badge&logo=rust&logoColor=white" alt="Rust" />
   <img src="https://img.shields.io/badge/Package%20Manager-Cargo-8ab4f8?style=for-the-badge" alt="Cargo" />
-  <img src="https://img.shields.io/badge/Status-In%20Active%20Development-orange?style=for-the-badge" alt="Status" />
+  <img src="https://img.shields.io/badge/Status-Initial%20Release-orange?style=for-the-badge" alt="Status" />
 </div>
 
 <br />
