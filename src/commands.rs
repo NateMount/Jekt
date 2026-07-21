@@ -444,9 +444,7 @@ pub fn which(path: String){
     if path == String::from("_na"){
         let cwd = std::env::current_dir().expect("");
         src = cwd.into_os_string().into_string().unwrap_or(String::from("/"));
-    } else {
-        src = path;
-    }
+    } else { src = path; }
 
     for project in load_source(INDEX_PATH).project.iter() {
         if src.to_ascii_lowercase().starts_with(project.path.to_ascii_lowercase().as_str()) {
