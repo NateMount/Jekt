@@ -21,7 +21,6 @@ Context-switching is expensive. When managing a graveyard of half-finished repos
 **Jekt solves this** by acting as your terminal-native command center. Track project metadata, manage embedded TO-DO lists, organize tech stacks, and find any codebase instantly.
 
 ---
-
 ## Features
 
 * **Centralized Workspace Indexing:** Keep track of project paths, descriptions, tech stacks, and custom tags.
@@ -29,7 +28,6 @@ Context-switching is expensive. When managing a graveyard of half-finished repos
 * **Instant Project Identification (`which`):** Check if your current terminal path belongs to a tracked workspace.
 * **Archiving System:** Move inactive projects to cold storage to keep your active index clean without losing history.
 * **Fast Tag & ID Search:** Find relevant projects using partial matches or tags.
-
 ---
 
 ### Commands
@@ -52,6 +50,7 @@ Context-switching is expensive. When managing a graveyard of half-finished repos
 | `clear` | `cl` | None | Reset both the active index and the archive TOML files. |
 | `version` | `v` | None | Output current Jekt CLI version. |
 | `debug` | `dbg` | `<index\|archive>` | Print internal file storage paths for debugging. |
+| `doc` | || |`<command>` | Show documentation for a specific jekt command. |
 ---
 
 ## Installation & Setup
