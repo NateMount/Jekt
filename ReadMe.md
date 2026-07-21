@@ -50,7 +50,7 @@ Context-switching is expensive. When managing a graveyard of half-finished repos
 | `clear` | `cl` | None | Reset both the active index and the archive TOML files. |
 | `version` | `v` | None | Output current Jekt CLI version. |
 | `debug` | `dbg` | `<index\|archive>` | Print internal file storage paths for debugging. |
-| `doc` | || |`<command>` | Show documentation for a specific jekt command. |
+| `doc` | |`<command>` | Show documentation for a specific jekt command. |
 ---
 
 ## Installation & Setup
