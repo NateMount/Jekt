@@ -44,7 +44,7 @@ Context-switching is expensive. When managing a graveyard of half-finished repos
 | `pop` || `<projectId> <key> [value]` | Remove a value or clear an attribute field. |
 | `todo` || `<projectId> [task]` | Shortcut to add or inspect tasks for a given project. |
 | `tag` || `<projectId> [tag]` | Shortcut to manage tags for a given project. |
-| `archive` | — | `[projectId]` | Move a project to the archive index. If no ID is passed, lists all archived projects. |
+| `archive` | | `[projectId]` | Move a project to the archive index. If no ID is passed, lists all archived projects. |
 | `restore` | `revive` | `<projectId>` | Restore an archived project back to the active index. |
 | `delete` | `del`, `rm` | `<projectId>` | Remove a project from the indexer (does **not** delete actual files). |
 | `clear` | `cl` | None | Reset both the active index and the archive TOML files. |
