@@ -67,21 +67,28 @@ pub fn clear() {
 /// - If project_id does not exist this function will simply notify the user that the project could not be found
 pub fn info(project_id: String){
     
+    let mut candidates: Vec<Project> = vec![];
+
     for project in load_source(INDEX_PATH).project{
-        if project.id.to_ascii_lowercase() == project_id.to_ascii_lowercase(){
-            println!("\x1b[1;34m[\x1b[0m {} \x1b[1;34m]\x1b[0m: \x1b[1;32m( STARTED\x1b[0m {} \x1b[1;32m)\x1b[0m", project.id, project.start_date);
-            println!("\t\x1b[1;35m[\x1b[0m \x1b[4mDescription\x1b[0m \x1b[1;35m]\x1b[0m: \x1b[3m{}\x1b[0m", project.desc);
-            println!("\t\x1b[1;34m(\x1b[0m Path  \x1b[1;34m)\x1b[0m: {}", project.path);
-            println!("\t\x1b[1;34m(\x1b[0m State \x1b[1;34m)\x1b[0m: {}", project.state);
-            println!("\t\x1b[1;34m(\x1b[0m Stack \x1b[1;34m)\x1b[0m: {:?}", project.stack);
-            println!("\t\x1b[1;34m(\x1b[0m Tags  \x1b[1;34m)\x1b[0m: {:?}", project.tags);
-            println!("\t\x1b[1;34m(\x1b[0m To Do \x1b[1;34m)\x1b[0m:");
-            for todo in project.todo.iter() { println!("\t\t\x1b[1;34m>>\x1b[0m \x1b[3m{}\x1b[0m", todo); }
-            return;
-        }
+        if project.id.to_ascii_lowercase().contains(&project_id.to_ascii_lowercase()){ candidates.push(project); }
     }
 
-    println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
+    if candidates.len() == 0 {
+        println!("\x1b[1;33m[%]\x1b[0m Project \x1b[3;34m`{}`\x1b[0m not found", project_id);
+        return;
+    }
+
+    for project in candidates{
+        println!("\x1b[1;34m[\x1b[0m {} \x1b[1;34m]\x1b[0m: \x1b[1;32m( STARTED\x1b[0m {} \x1b[1;32m)\x1b[0m", project.id, project.start_date);
+        println!("\t\x1b[1;35m[\x1b[0m \x1b[4mDescription\x1b[0m \x1b[1;35m]\x1b[0m: \x1b[3m{}\x1b[0m", project.desc);
+        println!("\t\x1b[1;34m(\x1b[0m Path  \x1b[1;34m)\x1b[0m: {}", project.path);
+        println!("\t\x1b[1;34m(\x1b[0m State \x1b[1;34m)\x1b[0m: {}", project.state);
+        println!("\t\x1b[1;34m(\x1b[0m Stack \x1b[1;34m)\x1b[0m: {:?}", project.stack);
+        println!("\t\x1b[1;34m(\x1b[0m Tags  \x1b[1;34m)\x1b[0m: {:?}", project.tags);
+        println!("\t\x1b[1;34m(\x1b[0m To Do \x1b[1;34m)\x1b[0m:");
+        for todo in project.todo.iter() { println!("\t\t\x1b[1;34m>>\x1b[0m \x1b[3m{}\x1b[0m", todo); }
+        print!("\n");
+    }
 }
 
 
