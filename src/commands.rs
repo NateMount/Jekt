@@ -450,3 +450,15 @@ pub fn which(path: String){
 
     println!("\x1b[1;33m[%]\x1b[0m Could not find any project in this path");
 }
+
+/// Used to debug application logic after compilation for any errors
+pub fn debug(component: String){
+
+    match component.to_ascii_lowercase().as_str() {
+        "_na" => println!("\x1b[1;34m[i]\x1b[0m The debug command is used to debug components of application logic\n\x1b[1;32mUsage\x1b[0m: jekt debug <component>\n"),
+        "index" => println!("\x1b[1;35mProject Index Path\x1b[0m: {}", INDEX_PATH),
+        "archive" => println!("\x1b[1;35mProject Archive Path\x1b[0m: {}", ARCHIVE_PATH),
+        _ => println!("\x1b[1;33m[%]\x1b[0m Unrecognized Component")
+    }
+
+}
