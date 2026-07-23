@@ -108,3 +108,6 @@ jekt restore my-api
 # Find which project you are currently working in
 jekt which
 ```
+
+## Components Built with AI Assistance
+- `ReadMe.md` : Used to enhance readability, reformat wording for conciseness & generate command list from program helper prompt.
